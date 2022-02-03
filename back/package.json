@@ -1,19 +1,12 @@
 {
-  "name": "learn-rest-api",
+  "name": "calories-rest-api",
   "version": "1.0.0",
-  "description": "API for learning purpose",
+  "description": "API for calories app",
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js"
   },
-  "keywords": [
-    "NODEJS",
-    "REST_API",
-    "mongodb"
-  ],
-  "author": "sagar karki",
-  "license": "MIT",
   "dependencies": {
     "bcrypt": "^5.0.0",
     "cors": "^2.8.5",

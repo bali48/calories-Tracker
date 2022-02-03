@@ -160,24 +160,6 @@ body {
     font-size: 0.9rem;
   }
 }
-.center {
-  flex: 4;
-}
-.left {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-}
-.right {
-  flex: 0.2;
-}
-.right p {
-  font-size: 32px;
-  color: #000;
-}
-.thumbnail {
-  width: 10px;
-}
 .calories_extend {
   background-color: #df4343;
   color: #ffffff;
