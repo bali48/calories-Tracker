@@ -1,7 +1,7 @@
 const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const { validationResult } = require("express-validator");
-
+const { destroyToken } = require("../utils/jwt");
 const { createToken } = require("../utils/jwt");
 const CustomError = require("../models/CustomError");
 
@@ -51,6 +51,24 @@ const signUp = async (req, res, next) => {
   }
 };
 
+const logout = async (req, res, next) => {
+  try {
+    let token;
+    if (
+      req.headers.authorization &&
+      req.headers.authorization.startsWith("Bearer")
+    ) {
+      token = req.headers.authorization.split(" ")[1];
+      console.log("destru", token);
+      // console.log(destroyToken(token));
+      res.status(201).json({ success: true });
+    }
+  } catch (err) {
+    console.log(err);
+    next(new CustomError("Something went wrong", 500));
+  }
+};
+
 const login = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -91,4 +109,4 @@ const userInfo = async (req, res, next) => {
   return res.status(201).send({ success: true, userInfo: req.user });
 };
 
-module.exports = { signUp, login, userInfo };
+module.exports = { signUp, login, userInfo, logout };

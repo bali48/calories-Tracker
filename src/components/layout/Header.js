@@ -6,7 +6,7 @@ export default function Header() {
   return (
     <header id="header">
       <Link to="/">
-        <h1 className="title">Calorie Tracking App</h1>
+        <h1 className="title">Calories Tracking App</h1>
       </Link>
       <AuthOptions />
     </header>

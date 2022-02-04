@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import { useHistory } from "react-router-dom";
 import UserContext from "../../context/UserContext";
+import { AuthService } from "../../services";
 
 export default function AuthOptions() {
   const { userData, setUserData } = useContext(UserContext);
@@ -8,12 +9,14 @@ export default function AuthOptions() {
   const history = useHistory();
 
   const login = () => history.push("/login");
-  const logout = () => {
+  const logout = async () => {
+    await AuthService.logout();
     setUserData({
       token: undefined,
       user: undefined,
     });
     localStorage.setItem("auth-token", "");
+    history.push("/login");
   };
 
   return (

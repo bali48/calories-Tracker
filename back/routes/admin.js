@@ -1,12 +1,13 @@
 const express = require("express");
 
 const auth = require("../middlewares/auth");
-const foodController = require("../controllers/food");
+const adminController = require("../controllers/admin");
 const { check } = require("express-validator");
+const admin = require("../middlewares/admin");
 
 const router = express.Router();
 
-router.get("/", auth, foodController.findAll);
+router.get("/", [auth, admin], adminController.reportStats);
 
 router.post(
   "/new",
@@ -17,10 +18,10 @@ router.post(
     check("published").isISO8601().toDate(),
   ],
 
-  foodController.createFoodEntry
+  adminController.createFoodEntry
 );
 
-router.get("/:id", foodController.findOne);
+router.get("/:id", adminController.findOne);
 
 router.post(
   "/edit/:id",
@@ -30,9 +31,9 @@ router.post(
     check("body", "Please fill out the field").trim().notEmpty(),
   ],
 
-  foodController.update
+  adminController.update
 );
 
-router.post("/delete/:id", auth, foodController.delete);
+router.post("/delete/:id", auth, adminController.delete);
 
 module.exports = router;

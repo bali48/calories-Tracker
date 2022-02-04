@@ -1,18 +1,19 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useContext } from "react";
-import { useHistory } from "react-router-dom";
+import { Redirect, useHistory } from "react-router-dom";
 import UserContext from "../../context/UserContext";
 import ErrorNotice from "../misc/ErrorNotice";
 import { AuthService } from "../../services/";
+import { useEffect } from "react";
 // import AuthService from "./services/authService";
 
 export default function Login() {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [error, setError] = useState();
-
-  const { setUserData } = useContext(UserContext);
+  const { userData, setUserData } = useContext(UserContext);
   const history = useHistory();
-
+  const store_token = localStorage.getItem("auth-token");
   const submit = async (e) => {
     e.preventDefault();
     try {
@@ -30,7 +31,7 @@ export default function Login() {
       err.response.data.msg && setError(err.response.data.msg);
     }
   };
-  return (
+  return !store_token ? (
     <div className="page">
       <h2>Log in</h2>
       {error && (
@@ -54,5 +55,5 @@ export default function Login() {
         <input type="submit" value="Log in" />
       </form>
     </div>
-  );
+  ) : null;
 }

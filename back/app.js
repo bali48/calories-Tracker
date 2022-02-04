@@ -3,6 +3,7 @@ require("dotenv").config();
 const connectToDatabase = require("./database/dbConfig");
 const user = require("./routes/user");
 const food = require("./routes/food");
+const admin = require("./routes/admin");
 const errorMiddleware = require("./middlewares/error");
 
 const app = express();
@@ -19,6 +20,7 @@ app.get("/", (req, res) => {
 
 app.use("/user", user);
 app.use("/food", food);
+app.use("/admin", admin);
 
 app.use("*", (req, res) => {
   res.status(404).json({
@@ -33,7 +35,7 @@ app.use("*", (req, res) => {
 
 app.use(errorMiddleware);
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 
 connectToDatabase().then((_) => {
   app.listen(PORT, (_) => {

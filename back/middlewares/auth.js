@@ -1,6 +1,7 @@
 const { verifyToken } = require("../utils/jwt");
 const User = require("../models/userModel");
 const CustomError = require("../models/CustomError");
+const { decode } = require("jsonwebtoken");
 
 module.exports = async (req, res, next) => {
   try {
@@ -21,6 +22,9 @@ module.exports = async (req, res, next) => {
     let decoded;
     try {
       decoded = verifyToken(token);
+      // console.log("decode", decode());
+      // console.log("decoded", decoded.header);
+      // console.log(decoded.payload);
     } catch (err) {
       return next(
         new CustomError("Unauthorized access, provide the token", 401)
@@ -28,7 +32,7 @@ module.exports = async (req, res, next) => {
     }
 
     const user = await User.findById(decoded.id);
-
+    // console.log("userDB", user.email);
     if (!user) {
       return next(new CustomError("Unauthorized access", 401));
     }
@@ -40,6 +44,7 @@ module.exports = async (req, res, next) => {
       email: user.email,
       _id: user._id,
       foods: user.foods,
+      role: user.role,
     };
     next();
   } catch (err) {

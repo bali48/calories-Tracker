@@ -106,7 +106,10 @@ export default function FoodInsert({ saveFood, closeModal }) {
                     // type="submit"
                     disabled={!productName || !dateChange}
                     style={{ marginLeft: "3px" }}
-                    className="btn btn-primary"
+                    // className={btn {(!productName || !dateChange) ? }
+                    className={`btn btn-primary ${
+                      !productName || !dateChange ? "disabled" : "active"
+                    }`}
                     onClick={(e) => saveFoodData(e)}
                   >
                     Save changes

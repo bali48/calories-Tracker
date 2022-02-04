@@ -13,14 +13,19 @@ import "bootstrap/dist/js/bootstrap.bundle";
 import "font-awesome/css/font-awesome.min.css";
 
 import "./style.css";
+import PrivateRoute from "./routes/PrivateRoute";
+import PublicRoute from "./routes/PublicRoute";
+import NoMatch from "./components/pages/NoMatch";
+import ManageUsers from "./components/pages/admin/ManageUsers";
 // console.log("ennnn", env);
 export default function App() {
   const [userData, setUserData] = useState({
     token: undefined,
     user: undefined,
   });
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [error, setError] = useState();
-
+  // conso
   useEffect(() => {
     let token = localStorage.getItem("auth-token");
     const userInfo = async () => {
@@ -28,8 +33,8 @@ export default function App() {
       // console.log(tokenRes);
       if (tokenRes) {
         const userRes = await AuthService.retrieveUser();
+        // console.log("userRes.token", userRes);
         if (!token) {
-          console.log("userRes.token", userRes);
           setError("you are not authorized");
         }
         // console.log("line 31", userRes.data.userInfo);
@@ -37,12 +42,13 @@ export default function App() {
           token,
           user: userRes.data.userInfo,
         });
+        setIsLoggedIn(true);
       }
     };
 
     userInfo();
-  }, []);
-
+  }, [userData.token]);
+  // console.log("userData ==>", userData);
   return (
     <>
       <BrowserRouter>
@@ -56,8 +62,26 @@ export default function App() {
               />
             )}
             <Switch>
-              <Route exact path="/" component={Home} />
-              <Route path="/login" component={Login} />
+              {/*
+               <Route exact path="/" component={Home} /> */}
+
+              <PrivateRoute exact path="/" redirectTo="/login">
+                <Home />
+              </PrivateRoute>
+              <PrivateRoute exact path="/manage-users" redirectTo="/404">
+                <ManageUsers />
+              </PrivateRoute>
+              <PublicRoute
+                path="/login"
+                redirectTo="/"
+                exact
+                // component={Login}
+              >
+                <Login />
+              </PublicRoute>
+              <Route path="*">
+                <NoMatch />
+              </Route>
             </Switch>
           </div>
         </UserContext.Provider>

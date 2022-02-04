@@ -9,19 +9,20 @@ const FoodService = {
   _token: localStorage.getItem("auth-token"),
 
   async retrieveFoodList() {
+    console.log("get food token", this._token);
     return await Axios.get(FOODLIST, {
       headers: { authorization: `Bearer ${this._token}` },
     });
   },
 
   async saveFood(foodDetail) {
-    console.log("foodDetail service login responding", foodDetail);
+    // console.log("foodDetail service login responding", foodDetail);
     return await Axios.post(NEWFOODENTRY, foodDetail, {
       headers: { authorization: `Bearer ${this._token}` },
     });
   },
   async retrieveNutriotionItems(item) {
-    console.log("18", process.env);
+    // console.log("18", process.env);
     return await Axios.get(`${Nutritionix}${item}`, {
       headers: {
         "x-app-key": `${this._nutritionixkey}`,

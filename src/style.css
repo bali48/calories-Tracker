@@ -62,7 +62,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #e02525;
+  background-color: #449c44d7;
 }
 #header .title {
   margin: 0;
@@ -75,12 +75,12 @@ body {
 }
 #header .auth-options button {
   padding: 0 1rem;
-  background-color: #b91b1b;
+  background-color: #449c44d7;
   color: #ffffff;
   font-size: 1.1rem;
 }
 #header .auth-options button:hover {
-  background-color: #be3a3a;
+  background-color: #12f512d7;
 }
 
 /* form */
@@ -163,4 +163,8 @@ body {
 .calories_extend {
   background-color: #df4343;
   color: #ffffff;
+}
+.success_button {
+  background-color: #449c44d7 !important;
+  color: #ffffff !important;
 }

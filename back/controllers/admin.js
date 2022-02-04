@@ -34,38 +34,43 @@ exports.createFoodEntry = async (req, res, next) => {
   }
 };
 
-exports.findAll = async (req, res, next) => {
+exports.reportStats = async (req, res, next) => {
   try {
-    console.log("req.user._id", req.user);
-    const tut = await Food.aggregate(
-      [
-        { $match: { creator: req.user._id } },
-        {
-          $group: {
-            _id: {
-              $dateToString: { format: "%Y-%m-%d", date: "$published" },
-            },
-            total: {
-              $sum: "$calories",
-            },
-            foodItems: {
-              $push: {
-                name: "$name",
-                calories: "$calories",
-                _id: "$_id",
-                timeEat: "$published",
-              },
-            },
+    console.log("reportStats", req.user);
+    var lastWeek = new Date();
+    lastWeek.setDate(lastWeek.getDate() - 6);
+    console.log("last week", lastWeek);
+    //average of entries by per user
+    const tut = await Food.aggregate([
+      { $match: { published: { $gte: lastWeek } } },
+      {
+        $group: {
+          _id: "$creator",
+          total: {
+            $sum: "$calories",
           },
         },
+      },
+      // {
+      //   $project: {
+      //     _id: 0,
+      //     avgTime: { $avg: "$total" },
+      //   },
+      // },
+    ]);
+    const entriesCurrentWeek = await Food.count({
+      published: { $gte: lastWeek },
+    });
+    const BeforeCurrentWeek = await Food.count({
+      published: { $lte: lastWeek },
+    });
 
-        { $sort: { _id: 1 } },
-      ],
-      function (err, doc) {
-        return JSON.stringify(doc);
-      }
-    );
-    return res.status(200).send({ success: true, foodList: tut });
+    return res.status(200).send({
+      success: true,
+      perUserSum: tut,
+      entriesCurrentWeek,
+      BeforeCurrentWeek,
+    });
   } catch (err) {
     console.log(err);
     next(new CustomError("Something went wrong", 500));

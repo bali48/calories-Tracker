@@ -9,7 +9,7 @@ const Autocomplete = ({ search, onClickItem }) => {
       setIsLoaded(false);
       let response = await FoodService.retrieveNutriotionItems(search);
       const { data } = response;
-      console.log(data);
+      // console.log(data);
       setInfo(data.branded);
       setIsLoaded(true);
     };
