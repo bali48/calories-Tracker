@@ -20,34 +20,62 @@ import ManageUsers from "./components/pages/admin/ManageUsers";
 // console.log("ennnn", env);
 export default function App() {
   const [userData, setUserData] = useState({
-    token: undefined,
+    token: localStorage.getItem("auth-token"),
     user: undefined,
   });
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [error, setError] = useState();
   // conso
+  // useEffect(() => {
+  //   let token = localStorage.getItem("auth-token");
+  //   console.log("checktoken > ", token);
+  //   const userInfo = async () => {
+  //     const tokenRes = await checkLoggedIn();
+  //     // console.log(tokenRes);
+  //     if (tokenRes) {
+  //       const userRes = await AuthService.retrieveUser();
+  //       // console.log("userRes.token", userRes);
+  //       if (!token) {
+  //         setError("you are not authorized");
+  //       }
+  //       // console.log("line 31", userRes.data.userInfo);
+  //       setUserData({
+  //         token,
+  //         user: userRes.data.userInfo,
+  //       });
+  //       setIsLoggedIn(true);
+  //     }
+  //   };
+
+  //   userInfo();
+  // }, []);
   useEffect(() => {
-    let token = localStorage.getItem("auth-token");
+    // setTimeout(() => {
+    // let token = localStorage.getItem("auth-token");
     const userInfo = async () => {
       const tokenRes = await checkLoggedIn();
-      // console.log(tokenRes);
+      console.log("tokenRes", tokenRes);
       if (tokenRes) {
-        const userRes = await AuthService.retrieveUser();
-        // console.log("userRes.token", userRes);
-        if (!token) {
+        if (!tokenRes) {
+          console.log("userRes.token", tokenRes);
           setError("you are not authorized");
         }
-        // console.log("line 31", userRes.data.userInfo);
-        setUserData({
-          token,
-          user: userRes.data.userInfo,
-        });
-        setIsLoggedIn(true);
+        const userRes = await AuthService.retrieveUser();
+        console.log("line 31", userRes);
+        if (userRes) {
+          setUserData({
+            tokenRes,
+            user: userRes.data.userInfo,
+          });
+        } else {
+          localStorage.setItem("auth-token", "");
+        }
       }
     };
-
     userInfo();
-  }, [userData.token]);
+    // }, 0);
+  }, []);
+
   // console.log("userData ==>", userData);
   return (
     <>
@@ -65,10 +93,15 @@ export default function App() {
               {/*
                <Route exact path="/" component={Home} /> */}
 
-              <PrivateRoute exact path="/" redirectTo="/login">
+              <PrivateRoute exact path="/" redirectTo="/login" isAdmin={false}>
                 <Home />
               </PrivateRoute>
-              <PrivateRoute exact path="/manage-users" redirectTo="/404">
+              <PrivateRoute
+                exact
+                path="/manage-users"
+                redirectTo="/404"
+                isAdmin={true}
+              >
                 <ManageUsers />
               </PrivateRoute>
               <PublicRoute

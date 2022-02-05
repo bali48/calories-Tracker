@@ -1,9 +1,10 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
 import { FoodService } from "../../../services/";
-
 const Autocomplete = ({ search, onClickItem }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [info, setInfo] = useState({});
+
   useEffect(() => {
     const makeAutocompleteCall = async () => {
       setIsLoaded(false);
@@ -14,6 +15,7 @@ const Autocomplete = ({ search, onClickItem }) => {
       setIsLoaded(true);
     };
     makeAutocompleteCall();
+    console.log("delay search", search);
   }, [search]);
 
   if (!isLoaded) {

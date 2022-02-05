@@ -21,8 +21,8 @@ router.post(
   adminController.createFoodEntry
 );
 
-router.get("/:id", adminController.findOne);
-
+router.get("/foodList", [auth, admin], adminController.findAll);
+router.delete("/deleteFood/:id", [auth, admin], adminController.delete);
 router.post(
   "/edit/:id",
   auth,

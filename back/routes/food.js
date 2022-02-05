@@ -33,6 +33,4 @@ router.post(
   foodController.update
 );
 
-router.post("/delete/:id", auth, foodController.delete);
-
 module.exports = router;

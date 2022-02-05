@@ -8,6 +8,8 @@ export const LOGOUT = base_url + "/user/logout";
 export const FOODLIST = base_url + "/food/";
 export const NEWFOODENTRY = base_url + "/food/new";
 export const ADMINSTATS = base_url + "/admin/";
+export const ADMINFOODLIST = base_url + "/admin/foodList";
+export const ADMINDELETEFOODENTRY = base_url + "/admin/deleteFood";
 
 export const Nutritionix =
   "https://trackapi.nutritionix.com/v2/search/instant?branded=true&common=false&self=false&query=";

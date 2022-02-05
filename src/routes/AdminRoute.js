@@ -2,28 +2,27 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Route, Redirect } from "react-router-dom";
 import UserContext from "../context/UserContext";
-import AdminRoute from "./AdminRoute";
 
-const PrivateRoute = ({ children, redirectTo, isAdmin, ...rest }) => {
+const AdminRoute = ({ children, redirectTo, ...rest }) => {
   const { userData } = useContext(UserContext);
-  const [userInfo, setUserInfo] = useState(null);
-  // console
+  const [userRole, setUserRole] = useState(null);
+  // console.log("children, redirectTo, ...rest", children, redirectTo, {
+  //   ...rest,
+  // });userRole
   // const isLoggedIn = userData.user ? true : false;
   const isLoggedIn = localStorage.getItem("auth-token");
   useEffect(() => {
     //   if (userData.user) {
-    console.log("Private Route<<", userData);
-    setUserInfo(userData.user);
+    if (userData.user) {
+      console.log("Private Route<<", userData.user.role);
+      setUserRole(userData.user.role);
+    }
     //     setIsLoggedIn(true);
     //   }
   }, [userData.user]);
   return (
     <React.Fragment>
-      {isAdmin ? (
-        <AdminRoute {...rest} redirectTo={redirectTo}>
-          {children}
-        </AdminRoute>
-      ) : (
+      {userRole === "admin" && (
         <Route
           {...rest}
           render={() => (isLoggedIn ? children : <Redirect to={redirectTo} />)}
@@ -33,4 +32,4 @@ const PrivateRoute = ({ children, redirectTo, isAdmin, ...rest }) => {
   );
 };
 
-export default PrivateRoute;
+export default AdminRoute;

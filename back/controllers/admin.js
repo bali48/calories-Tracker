@@ -77,14 +77,36 @@ exports.reportStats = async (req, res, next) => {
   }
 };
 
-exports.findOne = async (req, res, next) => {
-  try {
-    const tut = await Food.findById(req.params.id);
+exports.findAll = async (req, res, next) => {
+  const { page, size, title } = req.query;
+  var condition = title
+    ? { title: { $regex: new RegExp(title), $options: "i" } }
+    : {};
+  const { limit, offset } = getPagination(page, size);
+  const populate = {
+    path: "creator",
+    select: "username",
+  };
+  // ["creator", ["username"]];
 
-    if (!tut) {
+  try {
+    const data = await Food.paginate(condition, {
+      populate,
+      offset,
+      limit,
+    });
+    if (!data) {
       return next(new CustomError("food not found", 404));
     }
-    res.send({ success: true, food: tut });
+    res.send({
+      success: true,
+      total: data.totalDocs,
+      data: data.docs,
+      total_pages: data.totalPages,
+      currentPage: data.page - 1,
+      per_page: limit,
+    });
+    // res.send({ success: true, foodDetail: data });
   } catch (err) {
     next(new CustomError("Something went wrong", 500));
   }
@@ -115,12 +137,13 @@ exports.delete = async (req, res, next) => {
       return next(new CustomError("food not found", 404));
     }
 
-    if (food.creator != req.uid) {
+    if (req.user.role !== "admin") {
       return next(new CustomError("Unauthorized access to delete route", 400));
     }
 
-    await food.findByIdAndDelete(req.params.id);
-    const user = await User.findById(req.uid);
+    // console.log("delete tre", food);
+    await food.remove(req.params.id);
+    const user = await User.findById(food.creator);
 
     if (user) {
       let foods = user.foods.filter((tutId) => tutId != req.params.id);
@@ -129,6 +152,13 @@ exports.delete = async (req, res, next) => {
 
     return res.send({ success: true, food });
   } catch (err) {
+    console.log("error", err);
     next(new CustomError("Something went wrong", 500));
   }
+};
+
+const getPagination = (page, size) => {
+  const limit = size ? +size : 3;
+  const offset = page ? page * limit : 0;
+  return { limit, offset };
 };

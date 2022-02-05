@@ -9,16 +9,21 @@ const FoodService = {
   _token: localStorage.getItem("auth-token"),
 
   async retrieveFoodList() {
-    console.log("get food token", this._token);
+    // console.log("get food token", this._token);
+    // console.log("Direct  token", localStorage.getItem("auth-token"));
     return await Axios.get(FOODLIST, {
-      headers: { authorization: `Bearer ${this._token}` },
+      headers: {
+        authorization: `Bearer ${localStorage.getItem("auth-token")}`,
+      },
     });
   },
 
   async saveFood(foodDetail) {
     // console.log("foodDetail service login responding", foodDetail);
     return await Axios.post(NEWFOODENTRY, foodDetail, {
-      headers: { authorization: `Bearer ${this._token}` },
+      headers: {
+        authorization: `Bearer ${localStorage.getItem("auth-token")}`,
+      },
     });
   },
   async retrieveNutriotionItems(item) {

@@ -7,10 +7,11 @@ import UserContext from "../context/UserContext";
 const PublicRoute = ({ children, redirectTo, ...rest }) => {
   const { userData } = useContext(UserContext);
 
-  const isLoggedIn = userData.user ? true : false;
+  // const isLoggedIn = userData.user ? true : false;
+  const isLoggedIn = localStorage.getItem("auth-token");
   // useEffect(() => {
   //   if (userData.user) {
-  // console.log("userData", isLoggedIn);
+  // console.log("userData", userData.user);
   //     setIsLoggedIn(true);
   //   }
   // }, [userData.user]);

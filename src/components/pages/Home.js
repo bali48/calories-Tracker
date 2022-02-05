@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useContext, useEffect, useState } from "react";
 import {
   Container,
@@ -30,8 +31,8 @@ export default function Home() {
     }
   };
   useEffect(() => {
-    if (userData.user.role === "user") {
-      console.log("first", userData.user);
+    if (userData.user && userData.user.role === "user") {
+      // console.log("first", userData.user);
       foodListCall();
     } else {
       // console.log("you are admin man");

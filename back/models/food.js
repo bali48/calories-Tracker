@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const mongoosePaginate = require("mongoose-paginate-v2");
 
 const foodSchema = new mongoose.Schema({
   name: {
@@ -18,5 +19,5 @@ const foodSchema = new mongoose.Schema({
     default: Date.now,
   },
 });
-
+foodSchema.plugin(mongoosePaginate);
 module.exports = mongoose.model("Food", foodSchema);

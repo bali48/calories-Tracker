@@ -82,6 +82,18 @@ body {
 #header .auth-options button:hover {
   background-color: #12f512d7;
 }
+#header a {
+  /* padding: 0 1rem; */
+  /* background-color: #449c44d7; */
+  color: #ffffff;
+  font-size: 1.1rem;
+}
+#header a:hover {
+  color: #cacaca;
+}
+.active-link {
+  font-weight: bold;
+}
 
 /* form */
 

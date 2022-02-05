@@ -10,12 +10,13 @@ export default function AuthOptions() {
 
   const login = () => history.push("/login");
   const logout = async () => {
-    await AuthService.logout();
     setUserData({
       token: undefined,
       user: undefined,
     });
     localStorage.setItem("auth-token", "");
+
+    // await AuthService.logout();
     history.push("/login");
   };
 

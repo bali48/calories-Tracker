@@ -10,9 +10,11 @@ const AuthService = {
     return await Axios.post(LOGIN, loginUser);
   },
   async logout() {
-    // console.log(this._token);
+    // console.log(localStorage.getItem("auth-token"));
     await Axios.get(LOGOUT, {
-      headers: { authorization: `Bearer ${this._token}` },
+      headers: {
+        authorization: `Bearer ${localStorage.getItem("auth-token")}`,
+      },
     });
     // return Promise.resolve().then(() => {
     localStorage.clear();
@@ -24,10 +26,12 @@ const AuthService = {
   async retrieveUser() {
     try {
       return await Axios.get(USERINFO, {
-        headers: { authorization: `Bearer ${this._token}` },
+        headers: {
+          authorization: `Bearer ${localStorage.getItem("auth-token")}`,
+        },
       });
     } catch (error) {
-      // return error.message;
+      // return error;
     }
   },
 };

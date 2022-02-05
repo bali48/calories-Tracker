@@ -10,7 +10,8 @@ const verifyToken = (token) => {
   return jwt.verify(token, jwtSecret);
 };
 const destroyToken = (token) => {
-  return jwt.(token, jwtSecret);
+  // return jwt.(token, jwtSecret);
+  return true;
   // return jwt.(token, jwtSecret);
 };
 

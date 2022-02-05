@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
 import UserContext from "../../../context/UserContext";
 import { FoodService } from "../../../services/";
@@ -5,14 +6,21 @@ import Autocomplete from "./Autocomplete";
 import ErrorNotice from "../../misc/ErrorNotice";
 import moment from "moment";
 import DateTimePicker from "react-datetime-picker";
+import { useSearchDebounce } from "../../../utills/Helper";
 
-export default function FoodInsert({ saveFood, closeModal }) {
+export default function FoodInsert({
+  saveFood,
+  closeModal,
+  isEditMode,
+  FoodDetail,
+}) {
   const [name, setName] = React.useState("");
   const [error, setError] = useState();
   const [dateChange, onDateChange] = React.useState(new Date());
   const [calories, setCalories] = React.useState(0);
   const [display, setDisplay] = React.useState(false);
   const [productName, setProductName] = React.useState("");
+  const [search, setSearch] = useSearchDebounce();
 
   const setDetail = (value) => {
     // console.log("sele", value);
@@ -29,6 +37,16 @@ export default function FoodInsert({ saveFood, closeModal }) {
       setError("please select a product");
     }
   };
+  useEffect(() => {
+    if (isEditMode) {
+      console.log("yes edit mode", FoodDetail);
+      setName(FoodDetail.name);
+      setProductName(FoodDetail.name);
+      setCalories(FoodDetail.calories);
+      onDateChange(new Date(FoodDetail.published));
+    }
+  }, []);
+
   return (
     <React.Fragment>
       <div className="modal" style={{ display: "block" }}>
@@ -62,12 +80,13 @@ export default function FoodInsert({ saveFood, closeModal }) {
                   onChange={(e) => {
                     setDisplay(true);
                     setName(e.target.value);
+                    setSearch(e.target.value);
                   }}
                   className="form-control"
                   placeholder="Apple"
                 />
-                {display && name && (
-                  <Autocomplete search={name} onClickItem={setDetail} />
+                {display && search && (
+                  <Autocomplete search={search} onClickItem={setDetail} />
                 )}
 
                 <label htmlFor="calories" className="form-label">
