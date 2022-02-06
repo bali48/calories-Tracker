@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import { AuthService } from "./services/";
@@ -17,41 +18,18 @@ import PrivateRoute from "./routes/PrivateRoute";
 import PublicRoute from "./routes/PublicRoute";
 import NoMatch from "./components/pages/NoMatch";
 import ManageUsers from "./components/pages/admin/ManageUsers";
+import InviteFriend from "./components/pages/Invitation/InviteFriend";
+import { ToastContainer } from "react-toast";
 // console.log("ennnn", env);
 export default function App() {
   const [userData, setUserData] = useState({
     token: localStorage.getItem("auth-token"),
     user: undefined,
+    showInviteModal: false,
   });
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [error, setError] = useState();
-  // conso
-  // useEffect(() => {
-  //   let token = localStorage.getItem("auth-token");
-  //   console.log("checktoken > ", token);
-  //   const userInfo = async () => {
-  //     const tokenRes = await checkLoggedIn();
-  //     // console.log(tokenRes);
-  //     if (tokenRes) {
-  //       const userRes = await AuthService.retrieveUser();
-  //       // console.log("userRes.token", userRes);
-  //       if (!token) {
-  //         setError("you are not authorized");
-  //       }
-  //       // console.log("line 31", userRes.data.userInfo);
-  //       setUserData({
-  //         token,
-  //         user: userRes.data.userInfo,
-  //       });
-  //       setIsLoggedIn(true);
-  //     }
-  //   };
-
-  //   userInfo();
-  // }, []);
   useEffect(() => {
-    // setTimeout(() => {
-    // let token = localStorage.getItem("auth-token");
     const userInfo = async () => {
       const tokenRes = await checkLoggedIn();
       console.log("tokenRes", tokenRes);
@@ -64,6 +42,7 @@ export default function App() {
         console.log("line 31", userRes);
         if (userRes) {
           setUserData({
+            ...userData,
             tokenRes,
             user: userRes.data.userInfo,
           });
@@ -82,13 +61,9 @@ export default function App() {
       <BrowserRouter>
         <UserContext.Provider value={{ userData, setUserData }}>
           <Header />
+          <ToastContainer delay={5000} />
           <div className="container">
-            {error && (
-              <ErrorNotice
-                message={error}
-                clearError={() => setError(undefined)}
-              />
-            )}
+            <InviteFriend />
             <Switch>
               {/*
                <Route exact path="/" component={Home} /> */}

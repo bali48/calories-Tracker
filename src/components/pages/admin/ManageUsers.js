@@ -10,11 +10,13 @@ export default function ManageUsers() {
   const { userData } = useContext(UserContext);
   const [data, setData] = useState({});
   const [page, setPage] = useState(1);
+  const [allUsers, setAllUsers] = useState([]);
   const [showAlert, setShowAlert] = useState(false);
   const [loadModal, setLoadModal] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [editFoodDetail, setEditFoodDetail] = useState(null);
   const [deleteRecordId, setDeleteRecordId] = useState(null);
+  const [editRecordId, setEditRecordId] = useState(null);
   const countPerPage = 3;
   const columns = [
     {
@@ -37,7 +39,11 @@ export default function ManageUsers() {
       selector: "creator.username",
     },
     {
-      name: "Action",
+      name: (
+        <button className="btn btn-success btn-sm" onClick={() => addFood()}>
+          New User
+        </button>
+      ),
       cell: (row) => {
         return (
           <div style={{ justifyContent: "space-between" }}>
@@ -55,7 +61,7 @@ export default function ManageUsers() {
       },
     },
   ];
-  const getUserList = async () => {
+  const getFoodList = async () => {
     try {
       let res = await AdminService.adminFoodList(page - 1, countPerPage);
       console.log("first response", res);
@@ -67,20 +73,45 @@ export default function ManageUsers() {
 
   const editUserEntry = (record) => {
     setEditFoodDetail(record);
+    setEditRecordId(record._id);
     setIsEditMode(true);
     setLoadModal(true);
   };
-  const updateFood = () => {};
-  const saveFood = () => {};
+  const updateFood = async (data) => {
+    console.log("inside update", data);
+    let reqData = { ...data, published: data.dateChange };
+    delete reqData._id;
+    delete reqData.dateChange;
+    let resp = await AdminService.adminEditFood(editRecordId, reqData);
+    setLoadModal(false);
+    setEditRecordId(null);
+    getFoodList();
+    console.log("update resp", resp);
+  };
+  const saveFood = async (data) => {
+    let reqData = { ...data, published: data.dateChange };
+    console.log("save by admin", reqData);
+    // delete reqData._id;
+    // delete reqData.dateChange;
+    let resp = await AdminService.newFoodEntryByAdmin(reqData);
+    setLoadModal(false);
+    console.log("resp", resp);
+  };
   const deleteUserEntry = (id) => {
     setDeleteRecordId(id);
     setShowAlert(true);
+  };
+  const addFood = async () => {
+    setLoadModal(true);
+    let user = await AdminService.allUsersList();
+    console.log("user Liust", user);
+    setAllUsers(user.data.usersList);
   };
   const handleDeleteAlert = async (resp) => {
     console.log("resp", resp);
     setShowAlert(false);
     await AdminService.adminDeleteFood(deleteRecordId);
-    getUserList();
+    getFoodList();
     // setDeleteRecordId(id);
   };
   const cancelDeleteAlert = () => {
@@ -90,13 +121,14 @@ export default function ManageUsers() {
   };
 
   useEffect(() => {
-    getUserList();
+    getFoodList();
   }, [page]);
 
   return (
     <div className="page">
       <DataTable
-        title="All Added Food Entries"
+        title={`All Added Food Entries      
+`}
         columns={columns}
         data={data.data}
         highlightOnHover
@@ -109,12 +141,6 @@ export default function ManageUsers() {
         }}
         onChangePage={(page) => setPage(page)}
       />
-      {/* <SweetAlert
-        title="Here's a message!"
-        onConfirm={this.onConfirm}
-        onCancel={this.onCancel}
-      /> */}
-
       <SweetAlert
         show={showAlert}
         warning
@@ -130,8 +156,10 @@ export default function ManageUsers() {
         <FoodInsert
           closeModal={setLoadModal}
           isEditMode={isEditMode}
+          calledBy={"admin"}
           FoodDetail={editFoodDetail}
           saveFood={isEditMode ? updateFood : saveFood}
+          usersList={allUsers}
         />
       )}
     </div>

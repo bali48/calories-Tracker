@@ -8,6 +8,7 @@ const admin = require("../middlewares/admin");
 const router = express.Router();
 
 router.get("/", [auth, admin], adminController.reportStats);
+router.get("/allUsers", [auth, admin], adminController.allUsersList);
 
 router.post(
   "/new",
@@ -15,7 +16,8 @@ router.post(
   [
     check("name", "Please fill out the field").trim().notEmpty(),
     check("calories", "Please fill out the field").trim().notEmpty(),
-    check("published").isISO8601().toDate(),
+    check("creator", "Please Select the user Name").trim().notEmpty(),
+    check("published", "Please Select a Valid date").isISO8601().toDate(),
   ],
 
   adminController.createFoodEntry
@@ -25,10 +27,11 @@ router.get("/foodList", [auth, admin], adminController.findAll);
 router.delete("/deleteFood/:id", [auth, admin], adminController.delete);
 router.post(
   "/edit/:id",
-  auth,
+  [auth, admin],
   [
-    check("title", "Please fill out the field").trim().notEmpty(),
-    check("body", "Please fill out the field").trim().notEmpty(),
+    check("name", "Please fill out the field").trim().notEmpty(),
+    check("calories", "Please fill out the field").trim().notEmpty(),
+    check("published").isISO8601().toDate(),
   ],
 
   adminController.update

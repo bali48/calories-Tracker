@@ -20,17 +20,4 @@ router.post(
   foodController.createFoodEntry
 );
 
-router.get("/:id", foodController.findOne);
-
-router.post(
-  "/edit/:id",
-  auth,
-  [
-    check("title", "Please fill out the field").trim().notEmpty(),
-    check("body", "Please fill out the field").trim().notEmpty(),
-  ],
-
-  foodController.update
-);
-
 module.exports = router;

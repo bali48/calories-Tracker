@@ -1,8 +1,11 @@
 // import validateEmail from "../utils/validateEmail";
 import {
+  ADMINADDFOOD,
   ADMINDELETEFOODENTRY,
+  ADMINEDITFOOD,
   ADMINFOODLIST,
   ADMINSTATS,
+  ADMINUSERSLIST,
   FOODLIST,
   NEWFOODENTRY,
   Nutritionix,
@@ -16,6 +19,14 @@ const AdminService = {
   async retrieveStats() {
     // console.log("get food token", this._token);
     return await Axios.get(ADMINSTATS, {
+      headers: {
+        authorization: `Bearer ${localStorage.getItem("auth-token")}`,
+      },
+    });
+  },
+  async allUsersList() {
+    // console.log("get food token", this._token);
+    return await Axios.get(ADMINUSERSLIST, {
       headers: {
         authorization: `Bearer ${localStorage.getItem("auth-token")}`,
       },
@@ -37,10 +48,25 @@ const AdminService = {
       },
     });
   },
+  async adminEditFood(id, foodDetail) {
+    return await Axios.post(`${ADMINEDITFOOD}/${id}`, foodDetail, {
+      headers: {
+        authorization: `Bearer ${localStorage.getItem("auth-token")}`,
+      },
+    });
+  },
 
   async saveUserFoodById(foodDetail) {
     // console.log("foodDetail service login responding", foodDetail);
     return await Axios.post(NEWFOODENTRY, foodDetail, {
+      headers: {
+        authorization: `Bearer ${localStorage.getItem("auth-token")}`,
+      },
+    });
+  },
+  async newFoodEntryByAdmin(foodDetail) {
+    // console.log("foodDetail service login responding", foodDetail);
+    return await Axios.post(ADMINADDFOOD, foodDetail, {
       headers: {
         authorization: `Bearer ${localStorage.getItem("auth-token")}`,
       },

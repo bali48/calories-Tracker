@@ -7,13 +7,10 @@ const admin = require("../middlewares/admin");
 const router = express.Router();
 
 router.post(
-  "/signup",
+  "/friendInvite",
   [
     check("username", "Please enter a valid username").trim().notEmpty(),
     check("email", "Please enter a valid email").trim().isEmail(),
-    check("password", "Please enter a valid password")
-      .trim()
-      .isLength({ min: 6 }),
   ],
   userController.signUp
 );

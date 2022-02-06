@@ -1,27 +1,30 @@
 const Food = require("../models/food");
 const User = require("../models/userModel");
 const CustomError = require("../models/CustomError");
+const { ObjectId } = require("mongodb");
 
 exports.createFoodEntry = async (req, res, next) => {
   console.log("req.body", req.body);
   if (!req.body) {
     return next(new CustomError("Body cannot be empty", 400));
   }
+  // return false;
+  let creator = req.body.creator;
   try {
     let insertDate = {
       name: req.body.name,
       calories: req.body.calories,
-      creator: req.uid,
+      creator: creator,
     };
     if (req.body.published) {
       insertDate["published"] = req.body.published;
     }
-    // published: req.published ? published
     const food = await Food.create(insertDate);
-
+    console.log("food", food);
     //connected foods with the user
-    const user = await User.findById(req.uid);
 
+    const user = await User.findById(creator);
+    console.log("User", user);
     if (user) {
       const foods = [...user.foods, food.id];
       await user.updateOne({ foods });
@@ -58,10 +61,10 @@ exports.reportStats = async (req, res, next) => {
       //   },
       // },
     ]);
-    const entriesCurrentWeek = await Food.count({
+    const entriesCurrentWeek = await Food.countDocuments({
       published: { $gte: lastWeek },
     });
-    const BeforeCurrentWeek = await Food.count({
+    const BeforeCurrentWeek = await Food.countDocuments({
       published: { $lte: lastWeek },
     });
 
@@ -70,6 +73,21 @@ exports.reportStats = async (req, res, next) => {
       perUserSum: tut,
       entriesCurrentWeek,
       BeforeCurrentWeek,
+    });
+  } catch (err) {
+    console.log(err);
+    next(new CustomError("Something went wrong", 500));
+  }
+};
+exports.allUsersList = async (req, res, next) => {
+  try {
+    const users = await User.find({ role: { $ne: "admin" } }).select(
+      "username"
+    );
+
+    return res.status(200).send({
+      success: true,
+      usersList: users,
     });
   } catch (err) {
     console.log(err);

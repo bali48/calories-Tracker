@@ -1,6 +1,6 @@
 import Axios from "axios";
 import ErrorNotice from "../components/misc/ErrorNotice";
-import { USERINFO, LOGIN, LOGOUT } from "../urls/APIURLS";
+import { USERINFO, LOGIN, LOGOUT, INVITATION } from "../urls/APIURLS";
 
 const AuthService = {
   _url: process.env.API_URL,
@@ -8,6 +8,10 @@ const AuthService = {
   async login(loginUser) {
     // console.log("auth service login responding", loginUser);
     return await Axios.post(LOGIN, loginUser);
+  },
+  async userInvite(loginUser) {
+    // console.log("auth service login responding", loginUser);
+    return await Axios.post(INVITATION, loginUser);
   },
   async logout() {
     // console.log(localStorage.getItem("auth-token"));

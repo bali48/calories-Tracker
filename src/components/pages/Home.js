@@ -12,6 +12,8 @@ import ErrorNotice from "../misc/ErrorNotice";
 import FoodInsert from "./Food/FoodInsert";
 import moment from "moment";
 import Report from "./admin/Report";
+import { toast } from "react-toast";
+
 export default function Home() {
   const { userData } = useContext(UserContext);
   const caloriesLimit = process.env.REACT_APP_Calories_Threshold;
@@ -32,11 +34,10 @@ export default function Home() {
   };
   useEffect(() => {
     if (userData.user && userData.user.role === "user") {
-      // console.log("first", userData.user);
       foodListCall();
     } else {
-      // console.log("you are admin man");
     }
+    toast.success("Message sent successfully!");
   }, [userData.user]);
 
   const saveFood = async ({ name, calories, dateChange }) => {
@@ -47,8 +48,6 @@ export default function Home() {
         published: dateChange,
       });
       foodListCall();
-      // setSaveData(true);
-      // closeModal(false);
       setLoadModal(false);
     } catch (error) {}
 
@@ -93,9 +92,8 @@ export default function Home() {
               <tbody>
                 {foodList.length > 0 ? (
                   foodList.map((foodItem, index) => (
-                    <React.Fragment>
+                    <React.Fragment key={Math.random()}>
                       <tr
-                        key={Math.random()}
                         onClick={onClickHandler}
                         className={`${
                           foodItem.total >= caloriesLimit
@@ -121,31 +119,32 @@ export default function Home() {
                         </td> */}
                       </tr>
                       {/* <div className=""> */}
-                      <table className="table collapse" key={Math.random()}>
-                        <thead>
-                          <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">product Name</th>
-                            <th scope="col">Calories</th>
-                            <th scope="col">Date in-take</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {foodItem.foodItems.map((subitem, subIndex) => (
-                            <tr key={Math.random()}>
-                              <React.Fragment>
-                                <td>{subIndex + 1}</td>
-                                <td>{subitem.name}</td>
-                                <td>{subitem.calories}</td>
-                                <td>
-                                  {moment(subitem.timeEat).format("hh:mm a")}
-                                </td>
-                              </React.Fragment>
+                      <tr colSpan={6} className="collapse">
+                        <table className="table ">
+                          <thead>
+                            <tr>
+                              <th scope="col">#</th>
+                              <th scope="col">product Name</th>
+                              <th scope="col">Calories</th>
+                              <th scope="col">Date in-take</th>
                             </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                      {/* </div> */}
+                          </thead>
+                          <tbody>
+                            {foodItem.foodItems.map((subitem, subIndex) => (
+                              <tr key={Math.random()}>
+                                <React.Fragment>
+                                  <td>{subIndex + 1}</td>
+                                  <td>{subitem.name}</td>
+                                  <td>{subitem.calories}</td>
+                                  <td>
+                                    {moment(subitem.timeEat).format("hh:mm a")}
+                                  </td>
+                                </React.Fragment>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </tr>
                     </React.Fragment>
                   ))
                 ) : (

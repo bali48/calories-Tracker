@@ -1,16 +1,20 @@
 import React from "react";
-import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-export default function ErrorNotice(props) {
-  console.log("coming inside error", props);
+export default function ErrorNotice({ message }) {
+  console.log("coming inside error", message);
   return (
-    // <div className="error-notice">
-    //   <span>{props.message}</span>
-    //   <button onClick={props.clearError}>X</button>
-    // </div>
-    <div>
-      <button onClick={props.message}>Notify!</button>
-      <ToastContainer />
-    </div>
+    message.length > 0 &&
+    message.map((msg, index) => (
+      // <div className="error-notice" key={index}>
+      //   <span>{msg.msg}</span>
+      // </div>
+      <div key={index} className="alert alert-danger fade show" role="alert">
+        <span
+          className="fa fa-exclamation-triangle"
+          style={{ marginRight: "10px" }}
+        ></span>
+        {msg.msg}
+      </div>
+    ))
   );
 }

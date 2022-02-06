@@ -180,3 +180,19 @@ body {
   background-color: #449c44d7 !important;
   color: #ffffff !important;
 }
+.navItemStyle {
+  display: flex;
+  column-gap: 20px;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.autoContainer {
+  display: flex;
+  flex-direction: row;
+  height: 30vh;
+}
+.center-col {
+  flex: 1;
+  background: #aaa;
+  overflow-y: scroll;
+}
