@@ -1,10 +1,9 @@
 const Food = require("../models/food");
 const User = require("../models/userModel");
 const CustomError = require("../models/CustomError");
-const { ObjectId } = require("mongodb");
 
 exports.createFoodEntry = async (req, res, next) => {
-  console.log("req.body", req.body);
+  // console.log("req.body", req.body);
   if (!req.body) {
     return next(new CustomError("Body cannot be empty", 400));
   }
@@ -15,16 +14,17 @@ exports.createFoodEntry = async (req, res, next) => {
       name: req.body.name,
       calories: req.body.calories,
       creator: creator,
+      created_by: "admin",
     };
     if (req.body.published) {
       insertDate["published"] = req.body.published;
     }
     const food = await Food.create(insertDate);
-    console.log("food", food);
+    // console.log("food", food);
     //connected foods with the user
 
     const user = await User.findById(creator);
-    console.log("User", user);
+    // console.log("User", user);
     if (user) {
       const foods = [...user.foods, food.id];
       await user.updateOne({ foods });
@@ -32,17 +32,17 @@ exports.createFoodEntry = async (req, res, next) => {
       return res.status(201).send({ success: true, food });
     }
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     next(new CustomError("Something went wrong", 500));
   }
 };
 
 exports.reportStats = async (req, res, next) => {
   try {
-    console.log("reportStats", req.user);
+    // console.log("reportStats", req.user);
     var lastWeek = new Date();
     lastWeek.setDate(lastWeek.getDate() - 6);
-    console.log("last week", lastWeek);
+    // console.log("last week", lastWeek);
     //average of entries by per user
     const tut = await Food.aggregate([
       { $match: { published: { $gte: lastWeek } } },
@@ -54,18 +54,12 @@ exports.reportStats = async (req, res, next) => {
           },
         },
       },
-      // {
-      //   $project: {
-      //     _id: 0,
-      //     avgTime: { $avg: "$total" },
-      //   },
-      // },
     ]);
     const entriesCurrentWeek = await Food.countDocuments({
-      published: { $gte: lastWeek },
+      created_at: { $gte: lastWeek },
     });
     const BeforeCurrentWeek = await Food.countDocuments({
-      published: { $lte: lastWeek },
+      created_at: { $lte: lastWeek },
     });
 
     return res.status(200).send({
@@ -75,7 +69,7 @@ exports.reportStats = async (req, res, next) => {
       BeforeCurrentWeek,
     });
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     next(new CustomError("Something went wrong", 500));
   }
 };
@@ -90,7 +84,7 @@ exports.allUsersList = async (req, res, next) => {
       usersList: users,
     });
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     next(new CustomError("Something went wrong", 500));
   }
 };
@@ -105,11 +99,10 @@ exports.findAll = async (req, res, next) => {
     path: "creator",
     select: "username",
   };
-  // ["creator", ["username"]];
-
   try {
     const data = await Food.paginate(condition, {
       populate,
+      sort: { published: -1 },
       offset,
       limit,
     });
@@ -132,6 +125,7 @@ exports.findAll = async (req, res, next) => {
 
 exports.update = async (req, res, next) => {
   try {
+    // console.log("update is called", req.body);
     const editfood = await Food.findOneAndUpdate(
       { _id: req.params.id },
       req.body,

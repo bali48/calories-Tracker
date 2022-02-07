@@ -65,7 +65,7 @@ export default function Report() {
   return (
     <div className="row">
       <div className="col-sm-4">
-        <div className="card" style={{ background: "#cacaca" }}>
+        <div className="card bg-green">
           <div className="card-body">
             <h5 className="card-title">{perUserAvg}</h5>
             <p className="card-text">
@@ -76,7 +76,7 @@ export default function Report() {
         </div>
       </div>
       <div className="col-sm-4">
-        <div className="card" style={{ background: "#cacaca" }}>
+        <div className="card bg-green">
           <div className="card-body">
             <h5 className="card-title">{currentWeekEntries}</h5>
             <p className="card-text">
@@ -86,7 +86,7 @@ export default function Report() {
         </div>
       </div>
       <div className="col-sm-4">
-        <div className="card" style={{ background: "#cacaca" }}>
+        <div className="card bg-green">
           <div className="card-body">
             <h5 className="card-title">{beforeCurrentWeekEntries}</h5>
             <p className="card-text">added entries the week before</p>

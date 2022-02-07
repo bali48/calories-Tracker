@@ -1,11 +1,5 @@
 const mongoose = require("mongoose");
 
-// FIXME: Don't store the loggedIn status and token of user in database (if you want restful api).
-
-// TODO: Add user's fullName
-
-// username is made unique (should be unique)
-
 const userSchema = new mongoose.Schema({
   username: {
     type: String,
@@ -35,6 +29,14 @@ const userSchema = new mongoose.Schema({
   role: {
     type: String,
     default: "user",
+  },
+  invited_by: {
+    type: String,
+    default: "user",
+  },
+  is_invited: {
+    type: Boolean,
+    default: false,
   },
 });
 

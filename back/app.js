@@ -9,7 +9,7 @@ const errorMiddleware = require("./middlewares/error");
 const app = express();
 var cors = require("cors");
 app.use(cors());
-console.log("safsd", process.env.MONGO_URI);
+// console.log("safsd", process.env.MONGO_URI);
 //express middleware
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());

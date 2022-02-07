@@ -9,9 +9,13 @@ const AuthService = {
     // console.log("auth service login responding", loginUser);
     return await Axios.post(LOGIN, loginUser);
   },
-  async userInvite(loginUser) {
+  async userInvite(userInfo) {
     // console.log("auth service login responding", loginUser);
-    return await Axios.post(INVITATION, loginUser);
+    return await Axios.post(INVITATION, userInfo, {
+      headers: {
+        authorization: `Bearer ${localStorage.getItem("auth-token")}`,
+      },
+    });
   },
   async logout() {
     // console.log(localStorage.getItem("auth-token"));

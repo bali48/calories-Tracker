@@ -1,8 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
+// import { useHistory } from "react-router-dom";
 import { AuthService } from "./services/";
-import ErrorNotice from "./components/misc/ErrorNotice";
 import Header from "./components/layout/Header";
 import Home from "./components/pages/Home";
 import Login from "./components/auth/Login";
@@ -19,36 +19,41 @@ import PublicRoute from "./routes/PublicRoute";
 import NoMatch from "./components/pages/NoMatch";
 import ManageUsers from "./components/pages/admin/ManageUsers";
 import InviteFriend from "./components/pages/Invitation/InviteFriend";
-import { ToastContainer } from "react-toast";
-// console.log("ennnn", env);
+
+import toast, { Toaster } from "react-hot-toast";
+
 export default function App() {
   const [userData, setUserData] = useState({
     token: localStorage.getItem("auth-token"),
     user: undefined,
     showInviteModal: false,
   });
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [error, setError] = useState();
+
   useEffect(() => {
     const userInfo = async () => {
-      const tokenRes = await checkLoggedIn();
-      console.log("tokenRes", tokenRes);
-      if (tokenRes) {
-        if (!tokenRes) {
-          console.log("userRes.token", tokenRes);
-          setError("you are not authorized");
+      try {
+        const tokenRes = await checkLoggedIn();
+        console.log("tokenRes", tokenRes);
+        if (tokenRes) {
+          if (!tokenRes) {
+            console.log("userRes.token", tokenRes);
+            toast.error("you are not authorized");
+          }
+          const userRes = await AuthService.retrieveUser();
+          // console.log("line 31", userRes);
+          if (userRes) {
+            setUserData({
+              ...userData,
+              tokenRes,
+              user: userRes.data.userInfo,
+            });
+          } else {
+            localStorage.setItem("auth-token", "");
+          }
         }
-        const userRes = await AuthService.retrieveUser();
-        console.log("line 31", userRes);
-        if (userRes) {
-          setUserData({
-            ...userData,
-            tokenRes,
-            user: userRes.data.userInfo,
-          });
-        } else {
-          localStorage.setItem("auth-token", "");
-        }
+      } catch (error) {
+        toast.error("session expired");
+        // history.pushState("/login");
       }
     };
     userInfo();
@@ -61,7 +66,9 @@ export default function App() {
       <BrowserRouter>
         <UserContext.Provider value={{ userData, setUserData }}>
           <Header />
-          <ToastContainer delay={5000} />
+          <div>
+            <Toaster />
+          </div>
           <div className="container">
             <InviteFriend />
             <Switch>

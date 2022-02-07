@@ -11,6 +11,7 @@ router.post(
   [
     check("username", "Please enter a valid username").trim().notEmpty(),
     check("email", "Please enter a valid email").trim().isEmail(),
+    auth,
   ],
   userController.signUp
 );

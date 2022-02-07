@@ -3,7 +3,6 @@ const User = require("../models/userModel");
 const CustomError = require("../models/CustomError");
 
 exports.createFoodEntry = async (req, res, next) => {
-  console.log("req.body", req.body);
   if (!req.body) {
     return next(new CustomError("Body cannot be empty", 400));
   }
@@ -16,7 +15,6 @@ exports.createFoodEntry = async (req, res, next) => {
     if (req.body.published) {
       insertDate["published"] = req.body.published;
     }
-    // published: req.published ? published
     const food = await Food.create(insertDate);
 
     //connected foods with the user
@@ -29,14 +27,14 @@ exports.createFoodEntry = async (req, res, next) => {
       return res.status(201).send({ success: true, food });
     }
   } catch (err) {
-    console.log(err);
+    // console.log("error", err);
     next(new CustomError("Something went wrong", 500));
   }
 };
 
 exports.findAll = async (req, res, next) => {
   try {
-    console.log("req.user._id", req.user);
+    // console.log("req.user._id", req.user);
     const tut = await Food.aggregate(
       [
         { $match: { creator: req.user._id } },

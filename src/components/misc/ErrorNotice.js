@@ -1,5 +1,4 @@
 import React from "react";
-import "react-toastify/dist/ReactToastify.css";
 export default function ErrorNotice({ message }) {
   console.log("coming inside error", message);
   return (

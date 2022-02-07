@@ -18,6 +18,14 @@ const foodSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  created_at: {
+    type: Date,
+    default: Date.now,
+  },
+  created_by: {
+    type: String,
+    default: "user",
+  },
 });
 foodSchema.plugin(mongoosePaginate);
 module.exports = mongoose.model("Food", foodSchema);

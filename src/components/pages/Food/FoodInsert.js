@@ -66,7 +66,9 @@ export default function FoodInsert({
         <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
           <div className="modal-content">
             <div className="modal-header">
-              <h5 className="modal-title">New Food Entry</h5>
+              <h5 className="modal-title">
+                {isEditMode ? "Edit" : "New"} Food Entry
+              </h5>
               <button
                 type="button"
                 className="btn-close"
@@ -159,7 +161,7 @@ export default function FoodInsert({
                     disabled={disableButton()}
                     style={{ marginLeft: "3px" }}
                     // className={btn {(!productName || !dateChange) ? }
-                    className="btn btn-primary"
+                    className="btn btn-success"
                     onClick={(e) => saveFoodData(e)}
                   >
                     Save changes

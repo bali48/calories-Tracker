@@ -35,7 +35,11 @@ export default function Login() {
       }
     } catch (err) {
       console.log("err", err.response);
-      err.response.data.errors.length > 0 && setError(err.response.data.errors);
+      if (err && err?.response?.data?.errors.length > 0) {
+        setError(err.response.data.errors);
+      } else {
+        setError([{ msg: "somerthing went wrong" }]);
+      }
     }
   };
   const validateEmail = () => {

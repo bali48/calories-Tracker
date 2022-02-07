@@ -6,6 +6,7 @@ import ErrorNotice from "../../misc/ErrorNotice";
 import moment from "moment";
 import DateTimePicker from "react-datetime-picker";
 import { useSearchDebounce } from "../../../utills/Helper";
+import toast from "react-hot-toast";
 
 export default function InviteFriend({}) {
   const [name, setName] = React.useState("");
@@ -46,8 +47,22 @@ export default function InviteFriend({}) {
     let isValid = validateEmail();
     console.log("isvalid", isValid);
     if (isValid) {
-      await AuthService.userInvite(friendData);
-      setLocalErrors({});
+      try {
+        let res = await AuthService.userInvite(friendData);
+        setLocalErrors({});
+        closeModal();
+        toast.success(`invite send on ${friendData.email}`);
+      } catch (err) {
+        console.log("err", err.response);
+
+        if (err && err?.response?.data?.errors.length > 0) {
+          err.response.data.errors.map((e) => {
+            toast.error(e.msg);
+          });
+        } else {
+          toast.error("something went wrong");
+        }
+      }
     }
   };
   const closeModal = () => {
@@ -111,7 +126,7 @@ export default function InviteFriend({}) {
                   <button
                     disabled={disableButton()}
                     style={{ marginLeft: "3px" }}
-                    className="btn btn-primary"
+                    className="btn btn-success"
                     onClick={(e) => sendInvite(e)}
                   >
                     <span className="fa fa-paper-plane"></span> Send Invite

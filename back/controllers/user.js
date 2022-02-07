@@ -24,19 +24,21 @@ const signUp = async (req, res, next) => {
         new CustomError("User with provided email already exists", 403)
       );
     }
-    user = await User.findOne({ username });
+    // user = await User.findOne({ username });
 
-    // if (user) {
-    //   return next(
-    //     new CustomError("User with provided username already exists", 403)
-    //   );
-    // }
+    // // if (user) {
+    // //   return next(
+    // //     new CustomError("User with provided username already exists", 403)
+    // //   );
+    // // }
 
     let password = genPassword();
     user = new User({
       username,
       email,
       password: password,
+      is_invited: true,
+      invited_by: req.user.username,
     });
 
     const salt = await bcrypt.genSalt(10);

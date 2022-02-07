@@ -6,6 +6,7 @@ import UserContext from "../../../context/UserContext";
 import AdminService from "../../../services/adminService";
 import moment from "moment";
 import FoodInsert from "../Food/FoodInsert";
+import toast from "react-hot-toast";
 export default function ManageUsers() {
   const { userData } = useContext(UserContext);
   const [data, setData] = useState({});
@@ -17,7 +18,7 @@ export default function ManageUsers() {
   const [editFoodDetail, setEditFoodDetail] = useState(null);
   const [deleteRecordId, setDeleteRecordId] = useState(null);
   const [editRecordId, setEditRecordId] = useState(null);
-  const countPerPage = 3;
+  const countPerPage = 5;
   const columns = [
     {
       name: "Food Name",
@@ -41,7 +42,7 @@ export default function ManageUsers() {
     {
       name: (
         <button className="btn btn-success btn-sm" onClick={() => addFood()}>
-          New User
+          New Entry
         </button>
       ),
       cell: (row) => {
@@ -78,24 +79,38 @@ export default function ManageUsers() {
     setLoadModal(true);
   };
   const updateFood = async (data) => {
-    console.log("inside update", data);
-    let reqData = { ...data, published: data.dateChange };
-    delete reqData._id;
-    delete reqData.dateChange;
-    let resp = await AdminService.adminEditFood(editRecordId, reqData);
-    setLoadModal(false);
-    setEditRecordId(null);
-    getFoodList();
-    console.log("update resp", resp);
+    try {
+      console.log("inside update", data);
+      let reqData = { ...data, published: data.dateChange };
+      delete reqData._id;
+      delete reqData.dateChange;
+      delete reqData.creator;
+      let resp = await AdminService.adminEditFood(editRecordId, reqData);
+      setLoadModal(false);
+      setEditRecordId(null);
+      getFoodList();
+      toast.success("Food Entry Updated Successfully");
+      // console.log("update resp", resp);
+    } catch (err) {
+      console.log("error update", err.message);
+      toast.error(err.message);
+    }
   };
   const saveFood = async (data) => {
-    let reqData = { ...data, published: data.dateChange };
-    console.log("save by admin", reqData);
-    // delete reqData._id;
-    // delete reqData.dateChange;
-    let resp = await AdminService.newFoodEntryByAdmin(reqData);
-    setLoadModal(false);
-    console.log("resp", resp);
+    try {
+      let reqData = { ...data, published: data.dateChange };
+      console.log("save by admin", reqData);
+      // delete reqData._id;
+      // delete reqData.dateChange;
+      await AdminService.newFoodEntryByAdmin(reqData);
+      setLoadModal(false);
+      getFoodList();
+      toast.success("Food Entry Added Successfully");
+      // console.log("resp", resp);
+    } catch (err) {
+      // console.log("error save", err.message);
+      toast.error(err.message);
+    }
   };
   const deleteUserEntry = (id) => {
     setDeleteRecordId(id);
@@ -112,6 +127,7 @@ export default function ManageUsers() {
     setShowAlert(false);
     await AdminService.adminDeleteFood(deleteRecordId);
     getFoodList();
+    toast.success("Food Entry Deleted Successfully");
     // setDeleteRecordId(id);
   };
   const cancelDeleteAlert = () => {

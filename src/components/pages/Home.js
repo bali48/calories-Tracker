@@ -12,7 +12,7 @@ import ErrorNotice from "../misc/ErrorNotice";
 import FoodInsert from "./Food/FoodInsert";
 import moment from "moment";
 import Report from "./admin/Report";
-import { toast } from "react-toast";
+import toast from "react-hot-toast";
 
 export default function Home() {
   const { userData } = useContext(UserContext);
@@ -37,7 +37,6 @@ export default function Home() {
       foodListCall();
     } else {
     }
-    toast.success("Message sent successfully!");
   }, [userData.user]);
 
   const saveFood = async ({ name, calories, dateChange }) => {
@@ -49,7 +48,10 @@ export default function Home() {
       });
       foodListCall();
       setLoadModal(false);
-    } catch (error) {}
+      toast.success("Food Entry Added Successfully");
+    } catch (err) {
+      toast.error(err.message);
+    }
 
     // console.log("nutrition", resp);
   };
@@ -110,7 +112,10 @@ export default function Home() {
                               className="fa-info-circle fa"
                               data-bs-toggle="tooltip"
                               data-bs-placement="right"
-                              title={`you have crossed the maximum limit of ${caloriesLimit} calories per day`}
+                              // title={`you have crossed the maximum limit of ${caloriesLimit} calories per day`}
+                              title={`you have consumed ${
+                                foodItem.total - caloriesLimit
+                              } more calories for today`}
                             ></span>
                           )}
                         </td>
@@ -119,14 +124,14 @@ export default function Home() {
                         </td> */}
                       </tr>
                       {/* <div className=""> */}
-                      <tr colSpan={6} className="collapse">
+                      <tr className="collapse">
                         <table className="table ">
                           <thead>
                             <tr>
                               <th scope="col">#</th>
                               <th scope="col">product Name</th>
                               <th scope="col">Calories</th>
-                              <th scope="col">Date in-take</th>
+                              <th scope="col">Time in-take</th>
                             </tr>
                           </thead>
                           <tbody>
